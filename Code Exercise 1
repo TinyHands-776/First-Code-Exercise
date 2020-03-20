@@ -1,0 +1,43 @@
+#include <kipr/botball.h>
+//Variable Definitions
+int l_motor = 1; //port for the left motor
+int r_motor = 2; //port for the right motor
+int speed = 100; //speed, allows robot to move
+int speed_slow = 50; //different speed variable, this variable with variable "speed" allows the robot to turn
+int l_bump = 0; //port for left bumper sensor
+int r_bump = 9; //port for right bumper sensor
+int no_speed = 0; //allows robot to stop
+
+//Function Definitions
+
+void forward(){ //moves robot forward
+motor(l_motor, speed);
+motor(r_motor, speed);
+}
+
+void left_turn(){ //robot makes a left turn
+motor(l_motor, -speed_slow);   
+motor(r_motor, speed);   
+ao();    
+}
+
+void stop(){ //robot stops moving
+motor(l_motor, no_speed);
+motor(r_motor, no_speed);
+}
+
+
+int main()
+{
+while(1){    
+forward(); //the robot moves forward forever unless the following is done:
+   
+if(digital(r_bump)){ //if the right bumper is hit, the robot will stop moving forward and make a left turn
+    left_turn();	
+}
+if(digital(l_bump)){ //if the left bumper is hit, the robot will stop the left turn and stop moving
+	stop();
+}    
+    
+}  
+}
