@@ -1,0 +1,115 @@
+// Created on Thu March 26 2020
+// List of Variables
+
+int l_motor = 0;
+int r_motor = 2;
+int middle_range = 1;
+int right_range = 2;
+int speed = 100;
+int speed_slow = 50;
+int right_sensor = 6;
+int no = 30; //I added two seperate speeds, yes and no, so the bot would follow the line, the original speeds were too fast and could not allow the robot to sense the line
+int yes = 15; 
+
+//List of Functions
+void starting_turn(){//this allows the robot to make a left turn so it doesn't hit the wall on its left
+ while(analog(right_range) > 430){
+  motor(l_motor, speed);
+  printf("Turning left\n");
+  }
+ }
+ 
+void along_the_wall(){//this allows the robot to keep its distance from the wall as well as move towards the bottom wall
+ while(analog(middle_range) > 290){
+  motor(l_motor, speed_slow);
+  motor(r_motor, speed_slow);
+  printf("Away from the wall\n");
+  }
+ } 
+ 
+void align(){//this allows the robot to face the black line before reaching the bottom wall
+ motor(r_motor, speed);
+ motor(l_motor, -speed);
+ msleep(300);
+ printf("Stop\n");
+ } 
+ 
+ void forward(){//after align, this allows the robot to move forward until it finds the line
+ motor(l_motor, no);
+ motor(r_motor, no);
+}  
+ 
+void left_turn(){//after forawrd, this allows the robot to move towards the line
+ motor(l_motor, yes);
+ motor(r_motor, no);
+ } 
+ 
+void right_turn(){//this allows the robot to move off the line
+ motor(l_motor, no);
+ motor(r_motor, yes); 
+ } 
+ 
+ void backwards(){//added a backwards function so the robot has space to make a left turn
+	motor(l_motor, -100); 
+	motor(r_motor, -100); 
+	msleep(500); 
+	 }
+ 
+void follow_line(){//this allows the robot to follow the line until it reaches the wall
+ while(analog(middle_range) > 200){
+	 forward();
+	 if(analog(right_sensor) < 500){
+		 left_turn();
+		 printf("turning_left\n");
+	 }
+	else{
+		right_turn();
+		printf("turning_right\n");
+		}		
+  }
+  	backwards(); 
+ }
+ 
+	 
+void special_left_veer(){//after moving backwards, the robot starts turning left to get in between the line and wall
+motor(l_motor, 0);
+motor(r_motor, 50);
+printf("find_2nd_line\n");	 
+msleep(1000);  	
+	}
+	
+void left_veer(){//this function allows the robot to turn left to go away from the wall
+motor(l_motor, 35);
+motor(r_motor, 50);	
+	}
+
+void right_veer(){//this function allows the robot to turn right to go away from the black line on the left.
+//this is faster than left_veer because the bot goes straight if both veers are the same speed and touch the line.
+motor(l_motor, 75);
+motor(r_motor, 35);	
+	}		
+ 
+  void follow_wall(){//this function lets the robot go betwen the line and wall until it touches the line in front.
+	printf("after_turn\n");
+	while(analog(right_sensor) < 500){
+	left_veer();
+	printf("away_from_wall\n");	
+	if(analog(right_range) > 400){
+	right_veer();
+	printf("closer_to_wall\n");	
+	 }
+	
+	}	
+ }
+ 
+ 
+int main(){
+starting_turn();	
+along_the_wall(); 
+align();
+follow_line();
+special_left_veer();	
+follow_wall();	
+return 0;
+ }
+
